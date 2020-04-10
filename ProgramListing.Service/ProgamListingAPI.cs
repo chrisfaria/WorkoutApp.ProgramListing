@@ -23,7 +23,7 @@ namespace ProgramListing.Service
             [Table("programs", Connection = "AzureWebJobsStorage")] IAsyncCollector<DayPlanTableEntity> dayPlanData,
             ILogger log)
         {
-            log.LogInformation("Getting all program headers");
+            log.LogInformation("Trigger function starting to create a new program");
 
             // Read the body
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -42,14 +42,7 @@ namespace ProgramListing.Service
                 DaysPerWeek = input.DaysPerWeek,
                 MinsPerDay = input.MinsPerDay
             };
-            try
-            {
-                await programData.AddAsync(program.ToTableEntity());
-            }
-            catch (StorageException e)
-            {
-                return new BadRequestResult();
-            }
+            await programData.AddAsync(program.ToTableEntity());
 
             // Insert all of the Day Plan data that's associated with the Program
             foreach (var dp in input.DayPlans)

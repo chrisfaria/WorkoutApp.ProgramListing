@@ -11,12 +11,17 @@ namespace ProgramListing.Service.Models
         public string Name { get; set; }
         public string MuscleGroup { get; set; }
         public string Desc { get; set; }
+        
+        // Increase on update
+        public int version { get; set; } = 1;
+        public DateTime CreatedTime { get; set; } = DateTime.UtcNow;
+    }
 
-        // CAN USE IF YOU HAVE A CREATE API AND DB TABLE FOR EXERCISE DATA
-        /// Increase on update
-        //public int version { get; set; } = 1;
-        //public DateTime CreatedTime { get; set; } = DateTime.UtcNow;
-        //public DateTime LastUpdatedTime { get; set; }
+    public class ExerciseCreateModel
+    {
+        public string Name { get; set; }
+        public string MuscleGroup { get; set; }
+        public string Desc { get; set; }
     }
 
     public class ExerciseTableEntity : TableEntity
@@ -25,10 +30,8 @@ namespace ProgramListing.Service.Models
         public string MuscleGroup { get; set; }
         public string Desc { get; set; }
 
-        // CAN USE IF YOU HAVE A CREATE API AND DB TABLE FOR EXERCISE DATA
-        /// Increase on update
-        //public int version { get; set; } = 1;
-        //public DateTime CreatedTime { get; set; } = DateTime.UtcNow;
-        //public DateTime LastUpdatedTime { get; set; }
+        // Increase on update
+        public int version { get; set; } = 1;
+        public DateTime CreatedTime { get; set; } = DateTime.UtcNow;
     }
 }
