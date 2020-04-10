@@ -2,76 +2,26 @@
   "Name": "Shortcut to Shred",
   "Desc": "Intense program focused on shredding fat and building strength",
   "Weeks": 6,
-  "DaysPerWeek": 2,
+  "DaysPerWeek": 3,
   "MinsPerDay": 90,
-  "WeeklyPlan": 
-  {
-    "DayPlans": 
-    [
-      {
-        "SetGroups": [
-          {
-            "Exercise": {
-              "Name": "Bench Press",
-              "MuscleGroup": "Chest",
-              "Desc": "Major chest and minor triceps"
-            },
-            "Reps": 10,
-            "Sets": 3
-          },
-          {
-            "Exercise": {
-              "Name": "Cable Flies",
-              "MuscleGroup": "Chest",
-              "Desc": "Major chest"
-            },
-            "Reps": 13,
-            "Sets": 4
-          },
-          {
-            "Exercise": {
-              "Name": "Dips",
-              "MuscleGroup": "Triceps",
-              "Desc": "Major triceps and minor shoulders"
-            },
-            "Reps": 8,
-            "Sets": 3
-          }
-        ],
-        "DayOfWeek": 1
-      },
-      {
-        "SetGroups": [
-          {
-            "Exercise": {
-              "Name": "Leg Press",
-              "MuscleGroup": "Legs",
-              "Desc": "Quads and hamstrings"
-            },
-            "Reps": 13,
-            "Sets": 10
-          },
-          {
-            "Exercise": {
-              "Name": "Squat",
-              "MuscleGroup": "Legs",
-              "Desc": "Major legs"
-            },
-            "Reps": 8,
-            "Sets": 4
-          },
-          {
-            "Exercise": {
-              "Name": "Pull ups",
-              "MuscleGroup": "Back",
-              "Desc": "Major back and delts"
-            },
-            "Reps": 8,
-            "Sets": 3
-          }
-        ],
-        "DayOfWeek": 3
-      }
-    ]
-  }
+  "DayPlans": [
+    {
+      "DayOfWeek": 1,
+      "ExerciseId": "chestj3oj32r09j3",
+      "Reps": 10,
+      "Sets": 3
+    },
+    {
+      "DayOfWeek": 3,
+      "ExerciseId": "legs92ijpojl",
+      "Reps": 8,
+      "Sets": 4
+    },
+    {
+      "DayOfWeek": 5,
+      "ExerciseId": "backj393jdd0",
+      "Reps": 13,
+      "Sets": 5
+    }
+  ]
 }

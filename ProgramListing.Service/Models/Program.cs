@@ -7,7 +7,7 @@ namespace ProgramListing.Service.Models
 {
     public class Program
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString("N");
+        public string Id { get; set; } = "PROGRAMS";//= Guid.NewGuid().ToString("N");
         public string Name { get; set; }
         public string Desc { get; set; }
 
@@ -15,9 +15,6 @@ namespace ProgramListing.Service.Models
         public int Weeks { get; set; }
         public int DaysPerWeek { get; set; }
         public int MinsPerDay { get; set; }
-
-        // Weekly workout plan (same every week)
-        public WeekPlan WeeklyPlan { get; set; }
 
         // Increase on update
         public int version { get; set; } = 1;
@@ -35,7 +32,7 @@ namespace ProgramListing.Service.Models
         public int MinsPerDay { get; set; }
 
         // Weekly workout plan (same every week)
-        public WeekPlan WeeklyPlan { get; set; }
+        public List<DayPlan> DayPlans { get; set; }
     }
 
     // Entity to use with the database. Id is not needed because partition key is used
@@ -49,9 +46,6 @@ namespace ProgramListing.Service.Models
         public int Weeks { get; set; }
         public int DaysPerWeek { get; set; }
         public int MinsPerDay { get; set; }
-
-        // Weekly workout plan (same every week)
-        public WeekPlanTableEntity WeeklyPlan { get; set; }
 
         // Increase on update
         public int version { get; set; } = 1;

@@ -19,7 +19,8 @@ namespace ProgramListing.Service
         [FunctionName("CreateProgram")]
         public static async Task<IActionResult> CreateProgram(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "program")] HttpRequest req,
-            [Table("programs", Connection = "AzureWebJobsStorage")] IAsyncCollector<ProgramTableEntity> programTable,
+            [Table("programs", Connection = "AzureWebJobsStorage")] IAsyncCollector<ProgramTableEntity> programData,
+            [Table("programs", Connection = "AzureWebJobsStorage")] IAsyncCollector<DayPlanTableEntity> dayPlanData,
             ILogger log)
         {
             log.LogInformation("Getting all program headers");
@@ -28,28 +29,43 @@ namespace ProgramListing.Service
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var input = JsonConvert.DeserializeObject<ProgramCreateModel>(requestBody);
 
-            // Map the request input to a Program
+            // Check if program name has been used before as it's a unique key
+            // TODO
+
+            // Insert new Program data
             var program = new Program()
             {
+                //Id = input.Name,
                 Name = input.Name,
                 Desc = input.Desc,
                 Weeks = input.Weeks,
                 DaysPerWeek = input.DaysPerWeek,
-                MinsPerDay = input.MinsPerDay,
-                WeeklyPlan = input.WeeklyPlan
+                MinsPerDay = input.MinsPerDay
             };
-
             try
             {
-                // Insert the program data into the database table
-                await programTable.AddAsync(program.ToTableEntity());
+                await programData.AddAsync(program.ToTableEntity());
             }
-            catch (StorageException e) when (e.RequestInformation.HttpStatusCode == 500)
+            catch (StorageException e)
             {
                 return new BadRequestResult();
             }
 
-            return new OkObjectResult(program);
+            // Insert all of the Day Plan data that's associated with the Program
+            foreach (var dp in input.DayPlans)
+            {
+                var dayplan = new DayPlan()
+                {
+                   ProgramName = program.Name,
+                   DayOfWeek = dp.DayOfWeek,
+                   ExerciseId = dp.ExerciseId,
+                   Reps = dp.Reps,
+                   Sets = dp.Sets
+                };
+                await dayPlanData.AddAsync(dayplan.ToTableEntity());
+            }
+            
+            return new OkObjectResult(input);
         }
 
         [FunctionName("GetProgramHeaders")]

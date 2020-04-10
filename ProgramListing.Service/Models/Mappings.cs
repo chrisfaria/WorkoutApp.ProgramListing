@@ -10,14 +10,14 @@ namespace ProgramListing.Service.Models
         {
             return new ProgramTableEntity()
             {
-                PartitionKey = "PROGRAMS",
+                PartitionKey = program.Name,
                 RowKey = program.Id,
                 Name = program.Name,
                 Desc = program.Desc,
                 Weeks = program.Weeks,
                 DaysPerWeek = program.DaysPerWeek,
                 MinsPerDay = program.MinsPerDay,
-                WeeklyPlan = program.WeeklyPlan.ToTableEntity(),
+                //DayPlan = program.DayPlan.ToTableEntity(),
                 version = program.version,
                 CreatedTime = program.CreatedTime
             };
@@ -33,124 +33,34 @@ namespace ProgramListing.Service.Models
                 Weeks = program.Weeks,
                 DaysPerWeek = program.DaysPerWeek,
                 MinsPerDay = program.MinsPerDay,
-                WeeklyPlan = program.WeeklyPlan.ToWeekPlan(),
+                //DayPlan = program.DayPlan.ToDayPlan(),
                 version = program.version,
                 CreatedTime = program.CreatedTime
             };
         }
 
-        public static WeekPlanTableEntity ToTableEntity(this WeekPlan weekplan)
+        public static DayPlanTableEntity ToTableEntity(this DayPlan exercise)
         {
-            return new WeekPlanTableEntity()
+            return new DayPlanTableEntity()
             {
-                PartitionKey = "WEEKPLANS",
-                RowKey = weekplan.Id,
-                DayPlans = weekplan.DayPlans.ToTableEntity()
-            };
-        }
-
-        public static WeekPlan ToWeekPlan(this WeekPlanTableEntity weekplan)
-        {
-            return new WeekPlan()
-            {
-                Id = weekplan.RowKey,
-                DayPlans = weekplan.DayPlans.ToDayPlan()
-            };
-        }
-
-        public static List<DayPlanTableEntity> ToTableEntity(this List<DayPlan> dayplans)
-        {
-            List<DayPlanTableEntity> output = new List<DayPlanTableEntity>();
-            foreach (DayPlan dayplan in dayplans)
-            {
-                DayPlanTableEntity entity = new DayPlanTableEntity()
-                {
-                    PartitionKey = "DAYPLANS",
-                    RowKey = dayplan.Id,
-                    SetGroups = dayplan.SetGroups.ToTableEntity(),
-                    DayOfWeek = dayplan.DayOfWeek
-                };
-                output.Add(entity);
-            }
-
-            return output;
-        }
-
-        public static List<DayPlan> ToDayPlan(this List<DayPlanTableEntity> dayplans)
-        {
-            List<DayPlan> output = new List<DayPlan>();
-            foreach (DayPlanTableEntity dayplan in dayplans)
-            {
-                DayPlan entity = new DayPlan()
-                {
-                    Id = dayplan.RowKey,
-                    SetGroups = dayplan.SetGroups.ToSetGroup(),
-                    DayOfWeek = dayplan.DayOfWeek
-                };
-                output.Add(entity);
-            }
-
-            return output;
-        }
-
-
-        public static List<SetGroupTableEntity> ToTableEntity(this List<SetGroup> setgroups)
-        {
-            List<SetGroupTableEntity> output = new List<SetGroupTableEntity>();
-            foreach (SetGroup setgroup in setgroups)
-            {
-                SetGroupTableEntity entity = new SetGroupTableEntity()
-                {
-                    PartitionKey = "SETGROUPS",
-                    RowKey = setgroup.Id,
-                    Exercise = setgroup.Exercise.ToTableEntity(),
-                    Reps = setgroup.Reps,
-                    Sets = setgroup.Sets
-                };
-                output.Add(entity);
-            }
-
-            return output;
-        }
-
-        public static List<SetGroup> ToSetGroup(this List<SetGroupTableEntity> setgroups)
-        {
-            List<SetGroup> output = new List<SetGroup>();
-            foreach (SetGroupTableEntity setgroup in setgroups)
-            {
-                SetGroup entity = new SetGroup()
-                {
-                    Id = setgroup.RowKey,
-                    Exercise = setgroup.Exercise.ToExercise(),
-                    Reps = setgroup.Reps,
-                    Sets = setgroup.Sets
-                };
-                output.Add(entity);
-            }
-
-            return output;
-        }
-
-        public static ExerciseTableEntity ToTableEntity(this Exercise exercise)
-        {
-            return new ExerciseTableEntity()
-            {
-                PartitionKey = "EXERCISES",
+                PartitionKey = exercise.ProgramName,
                 RowKey = exercise.Id,
-                Name = exercise.Name,
-                MuscleGroup = exercise.MuscleGroup,
-                Desc = exercise.Desc
+                DayOfWeek = exercise.DayOfWeek,
+                ExerciseId = exercise.ExerciseId,
+                Reps = exercise.Reps,
+                Sets = exercise.Sets
             };
         }
 
-        public static Exercise ToExercise(this ExerciseTableEntity exercise)
+        public static DayPlan ToDayPlan(this DayPlanTableEntity exercise)
         {
-            return new Exercise()
+            return new DayPlan()
             {
                 Id = exercise.RowKey,
-                Name = exercise.Name,
-                MuscleGroup = exercise.MuscleGroup,
-                Desc = exercise.Desc
+                DayOfWeek = exercise.DayOfWeek,
+                ExerciseId = exercise.ExerciseId,
+                Reps = exercise.Reps,
+                Sets = exercise.Sets
             };
         }
     }
