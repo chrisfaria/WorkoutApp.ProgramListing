@@ -19,6 +19,7 @@ namespace ProgramListing.Service
         [FunctionName("CreateProgram")]
         public static async Task<IActionResult> CreateProgram(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "program")] HttpRequest req,
+            [Table("programs", Connection = "AzureWebJobsStorage")] CloudTable programsQuery,
             [Table("programs", Connection = "AzureWebJobsStorage")] IAsyncCollector<ProgramTableEntity> programData,
             [Table("programs", Connection = "AzureWebJobsStorage")] IAsyncCollector<DayPlanTableEntity> dayPlanData,
             ILogger log)
@@ -29,8 +30,17 @@ namespace ProgramListing.Service
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var input = JsonConvert.DeserializeObject<ProgramCreateModel>(requestBody);
 
-            // Check if program name has been used before as it's a unique key
-            // TODO
+            // Check if program name has been used before as it's a unique key. If it's found don't create
+            var query = new TableQuery<ProgramTableEntity>()
+                .Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, "PROGRAMS"));
+            var segment = await programsQuery.ExecuteQuerySegmentedAsync(query, null);
+            foreach (var p in segment.Results)
+            {
+                if(p.PartitionKey == input.Name)
+                {
+                    return new ConflictObjectResult($"The program name '{input.Name}' already exists");
+                }
+            }
 
             // Insert new Program data
             var program = new Program()
@@ -58,7 +68,7 @@ namespace ProgramListing.Service
                 await dayPlanData.AddAsync(dayplan.ToTableEntity());
             }
             
-            return new OkObjectResult(input);
+            return new CreatedResult(req.Path,input);
         }
 
         [FunctionName("GetProgramHeaders")]
@@ -69,7 +79,8 @@ namespace ProgramListing.Service
         {
             log.LogInformation("Getting all program headers");
 
-            var query = new TableQuery<ProgramTableEntity>();
+            var query = new TableQuery<ProgramTableEntity>()
+                .Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, "PROGRAMS"));
             var segment = await programsTable.ExecuteQuerySegmentedAsync(query, null);
 
             return new OkObjectResult(segment.Select(Mappings.ToProgram));
