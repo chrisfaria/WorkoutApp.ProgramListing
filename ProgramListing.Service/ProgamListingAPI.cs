@@ -16,6 +16,8 @@ namespace ProgramListing.Service
 {
     public static class ProgamListingAPI
     {
+        private const string programRowKey = "PROGRAMS";
+
         [FunctionName("CreateProgram")]
         public static async Task<IActionResult> CreateProgram(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "program")] HttpRequest req,
@@ -73,7 +75,7 @@ namespace ProgramListing.Service
 
         [FunctionName("GetProgramHeaders")]
         public static async Task<IActionResult> GetProgramHeaders(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "programheaders")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "program/headers")] HttpRequest req,
             [Table("programs", Connection = "AzureWebJobsStorage")] CloudTable programsTable,
             ILogger log)
         {
@@ -82,6 +84,24 @@ namespace ProgramListing.Service
             var query = new TableQuery<ProgramTableEntity>()
                 .Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, "PROGRAMS"));
             var segment = await programsTable.ExecuteQuerySegmentedAsync(query, null);
+
+            return new OkObjectResult(segment.Select(Mappings.ToProgram));
+        }
+
+        [FunctionName("GetProgramDetailByName")]
+        public static async Task<IActionResult> GetProgramDetailByName(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "program/detail/{name}")] HttpRequest req,
+            [Table("programs", Connection = "AzureWebJobsStorage")] CloudTable programDetailsTable,
+            ILogger log, string name)
+        {
+            log.LogInformation($"Getting program details for '{name}'");
+
+            var filterPKey = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, name);
+            var filterRKey = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.NotEqual, programRowKey);
+
+            var query = new TableQuery<ProgramTableEntity>()
+                .Where(TableQuery.CombineFilters(filterPKey, TableOperators.And, filterRKey));
+            var segment = await programDetailsTable.ExecuteQuerySegmentedAsync(query, null);
 
             return new OkObjectResult(segment.Select(Mappings.ToProgram));
         }
