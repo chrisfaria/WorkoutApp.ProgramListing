@@ -11,14 +11,13 @@ namespace ProgramListing.Service.Models
         {
             return new ProgramTableEntity()
             {
-                PartitionKey = program.Name,
+                PartitionKey = "PROGRAM_HEADER",
                 RowKey = program.Id,
                 Name = program.Name,
                 Desc = program.Desc,
                 Weeks = program.Weeks,
                 DaysPerWeek = program.DaysPerWeek,
                 MinsPerDay = program.MinsPerDay,
-                //DayPlan = program.DayPlan.ToTableEntity(),
                 version = program.version,
                 CreatedTime = program.CreatedTime
             };
@@ -34,7 +33,6 @@ namespace ProgramListing.Service.Models
                 Weeks = program.Weeks,
                 DaysPerWeek = program.DaysPerWeek,
                 MinsPerDay = program.MinsPerDay,
-                //DayPlan = program.DayPlan.ToDayPlan(),
                 version = program.version,
                 CreatedTime = program.CreatedTime
             };
@@ -45,7 +43,7 @@ namespace ProgramListing.Service.Models
         {
             return new DayPlanTableEntity()
             {
-                PartitionKey = exercise.ProgramName,
+                PartitionKey = "PROGRAM_DETAIL_" + exercise.ProgramId,
                 RowKey = exercise.Id,
                 DayOfWeek = exercise.DayOfWeek,
                 ExerciseId = exercise.ExerciseId,

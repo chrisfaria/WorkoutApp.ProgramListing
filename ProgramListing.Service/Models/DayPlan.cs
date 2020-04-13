@@ -7,8 +7,8 @@ namespace ProgramListing.Service.Models
 {
     public class DayPlan
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString("N");
-        public string ProgramName { get; set; }
+        public string Id { get; set; } //= Guid.NewGuid().ToString("N");
+        public string ProgramId { get; set; }
         public DayOfWeek DayOfWeek { get; set; }
         public string ExerciseId { get; set; }
         public int Reps { get; set; }

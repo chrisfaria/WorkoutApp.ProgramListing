@@ -7,7 +7,7 @@ namespace ProgramListing.Service.Models
 {
     public class Program
     {
-        public string Id { get; set; } = "PROGRAMS";//= Guid.NewGuid().ToString("N");
+        public string Id { get; set; } = Guid.NewGuid().ToString("N");
         public string Name { get; set; }
         public string Desc { get; set; }
 

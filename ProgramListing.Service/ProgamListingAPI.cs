@@ -16,7 +16,7 @@ namespace ProgramListing.Service
 {
     public static class ProgamListingAPI
     {
-        private const string programRowKey = "PROGRAMS";
+        //private const string programRowKey = "PROGRAMS";
 
         [FunctionName("CreateProgram")]
         public static async Task<IActionResult> CreateProgram(
@@ -47,7 +47,6 @@ namespace ProgramListing.Service
             // Insert new Program data
             var program = new Program()
             {
-                //Id = input.Name,
                 Name = input.Name,
                 Desc = input.Desc,
                 Weeks = input.Weeks,
@@ -57,11 +56,13 @@ namespace ProgramListing.Service
             await programData.AddAsync(program.ToTableEntity());
 
             // Insert all of the Day Plan data that's associated with the Program
+            int dpPosition = 1;
             foreach (var dp in input.DayPlans)
             {
                 var dayplan = new DayPlan()
                 {
-                   ProgramName = program.Name,
+                   ProgramId = program.Id,
+                   Id = (dpPosition++).ToString(),
                    DayOfWeek = dp.DayOfWeek,
                    ExerciseId = dp.ExerciseId,
                    Reps = dp.Reps,
@@ -82,25 +83,26 @@ namespace ProgramListing.Service
             log.LogInformation("Getting all program headers");
 
             var query = new TableQuery<ProgramTableEntity>()
-                .Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, "PROGRAMS"));
+                .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "PROGRAM_HEADER"));
             var segment = await programsTable.ExecuteQuerySegmentedAsync(query, null);
 
             return new OkObjectResult(segment.Select(Mappings.ToProgram));
         }
 
-        [FunctionName("GetProgramDetailByName")]
-        public static async Task<IActionResult> GetProgramDetailByName(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "program/detail/{name}")] HttpRequest req,
+        [FunctionName("GetProgramDetailsByID")]
+        public static async Task<IActionResult> GetProgramDetailsByID(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "program/detail/{id}")] HttpRequest req,
             [Table("programs", Connection = "AzureWebJobsStorage")] CloudTable programDetailsTable,
-            ILogger log, string name)
+            ILogger log, string id)
         {
-            log.LogInformation($"Getting program details for '{name}'");
+            log.LogInformation($"Getting program details for '{id}'");
 
-            var filterPKey = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, name);
-            var filterRKey = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.NotEqual, programRowKey);
+            var filterPKey = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "PROGRAM_DETAIL_"+id);
+            //var filterRKey = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.NotEqual, programRowKey);
 
             var query = new TableQuery<ProgramTableEntity>()
-                .Where(TableQuery.CombineFilters(filterPKey, TableOperators.And, filterRKey));
+                //.Where(TableQuery.CombineFilters(filterPKey, TableOperators.And, filterRKey));
+                .Where(filterPKey);
             var segment = await programDetailsTable.ExecuteQuerySegmentedAsync(query, null);
 
             return new OkObjectResult(segment.Select(Mappings.ToProgram));
