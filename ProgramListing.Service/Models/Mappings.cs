@@ -45,7 +45,7 @@ namespace ProgramListing.Service.Models
             {
                 PartitionKey = "PROGRAM_DETAIL_" + exercise.ProgramId,
                 RowKey = exercise.Id,
-                DayOfWeek = exercise.DayOfWeek,
+                DayOfWeek = (int)exercise.DayOfWeek,
                 ExerciseId = exercise.ExerciseId,
                 Reps = exercise.Reps,
                 Sets = exercise.Sets
@@ -57,7 +57,7 @@ namespace ProgramListing.Service.Models
             return new DayPlan()
             {
                 Id = exercise.RowKey,
-                DayOfWeek = exercise.DayOfWeek,
+                DayOfWeek = (DayOfWeek)exercise.DayOfWeek,
                 ExerciseId = exercise.ExerciseId,
                 Reps = exercise.Reps,
                 Sets = exercise.Sets
@@ -98,8 +98,8 @@ namespace ProgramListing.Service.Models
             return new MuscleGroupTableEntity()
             {
                 PartitionKey = "MUSCLE_GROUP",
-                RowKey = "LIST",
-                MuscleGroupList = String.Join(",",muscleGroup.MuscleGroupList)
+                RowKey = muscleGroup.Name,
+                Desc = muscleGroup.Desc
             };
         }
 
@@ -107,7 +107,8 @@ namespace ProgramListing.Service.Models
         {
             return new MuscleGroup()
             {
-                MuscleGroupList = muscleGroup.MuscleGroupList.Split(",")
+                Name = muscleGroup.RowKey,
+                Desc = muscleGroup.Desc
             };
         }
     }

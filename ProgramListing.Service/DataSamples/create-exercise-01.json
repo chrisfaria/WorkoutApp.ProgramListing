@@ -1,5 +1,32 @@
-{
-  "Name": "Squat",
-  "MuscleGroup": "Leg",
-  "Desc": "Major leg workout hitting a range of leg muscles",
-}
+[
+  {
+    "Name": "Squat",
+    "MuscleGroup": "Legs",
+    "Desc": "Major leg workout hitting a range of leg muscles"
+  },
+  {
+    "Name": "Bench Press",
+    "MuscleGroup": "Chest",
+    "Desc": "Staple on Monday"
+  },
+  {
+    "Name": "Incline Press",
+    "MuscleGroup": "Chest",
+    "Desc": "Working the upper chest"
+  },
+  {
+    "Name": "Decline Press",
+    "MuscleGroup": "Chest",
+    "Desc": "Working the lower chest"
+  },
+  {
+    "Name": "Leg Extension",
+    "MuscleGroup": "Leg",
+    "Desc": "Glute and hamstrings"
+  },
+  {
+    "Name": "Donkey Raise",
+    "MuscleGroup": "Legs",
+    "Desc": "Calve workout"
+  }
+]

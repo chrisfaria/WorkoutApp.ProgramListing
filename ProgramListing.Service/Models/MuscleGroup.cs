@@ -7,11 +7,18 @@ namespace ProgramListing.Service.Models
 {
     public class MuscleGroup
     {
-        public string[] MuscleGroupList { get; set; }
+        public string Name { get; set; }
+        public string Desc { get; set; }
+    }
+
+    public class MuscleGroupUpdateModel
+    {
+        public string Name { get; set; }
+        public string Desc { get; set; }
     }
 
     public class MuscleGroupTableEntity : TableEntity
     {
-        public string MuscleGroupList { get; set; }
+        public string Desc { get; set; }
     }
 }

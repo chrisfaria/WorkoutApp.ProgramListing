@@ -92,7 +92,8 @@ namespace ProgramListing.Service
         [FunctionName("GetProgramDetailsByID")]
         public static async Task<IActionResult> GetProgramDetailsByID(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "program/detail/{id}")] HttpRequest req,
-            [Table("programs", Connection = "AzureWebJobsStorage")] CloudTable programDetailsTable,
+            [Table("programs", Connection = "AzureWebJobsStorage")] CloudTable programsTable,
+            [Table("exercises", Connection = "AzureWebJobsStorage")] CloudTable exercisesTable,
             ILogger log, string id)
         {
             log.LogInformation($"Getting program details for '{id}'");
@@ -103,7 +104,7 @@ namespace ProgramListing.Service
             var query = new TableQuery<ProgramTableEntity>()
                 //.Where(TableQuery.CombineFilters(filterPKey, TableOperators.And, filterRKey));
                 .Where(filterPKey);
-            var segment = await programDetailsTable.ExecuteQuerySegmentedAsync(query, null);
+            var segment = await programsTable.ExecuteQuerySegmentedAsync(query, null);
 
             return new OkObjectResult(segment.Select(Mappings.ToProgram));
         }
