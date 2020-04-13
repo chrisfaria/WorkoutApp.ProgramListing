@@ -69,7 +69,7 @@ namespace ProgramListing.Service.Models
         {
             return new ExerciseTableEntity()
             {
-                PartitionKey = "EXERCISES",
+                PartitionKey = "EXERCISE",
                 RowKey = exercise.Id,
                 Name = exercise.Name,
                 MuscleGroup = exercise.MuscleGroup,
@@ -89,6 +89,25 @@ namespace ProgramListing.Service.Models
                 Desc = exercise.Desc,
                 version = exercise.version,
                 CreatedTime = exercise.CreatedTime
+            };
+        }
+
+        // Mucle Group Mapping
+        public static MuscleGroupTableEntity ToTableEntity(this MuscleGroup muscleGroup)
+        {
+            return new MuscleGroupTableEntity()
+            {
+                PartitionKey = "MUSCLE_GROUP",
+                RowKey = "LIST",
+                MuscleGroupList = String.Join(",",muscleGroup.MuscleGroupList)
+            };
+        }
+
+        public static MuscleGroup ToMuscleGroup(this MuscleGroupTableEntity muscleGroup)
+        {
+            return new MuscleGroup()
+            {
+                MuscleGroupList = muscleGroup.MuscleGroupList.Split(",")
             };
         }
     }
