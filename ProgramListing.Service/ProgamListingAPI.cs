@@ -74,6 +74,7 @@ namespace ProgramListing.Service
             return new CreatedResult(req.Path,input);
         }
 
+        // List the existing headers
         [FunctionName("GetProgramHeaders")]
         public static async Task<IActionResult> GetProgramHeaders(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "program/headers")] HttpRequest req,
@@ -89,6 +90,7 @@ namespace ProgramListing.Service
             return new OkObjectResult(segment.Select(Mappings.ToProgram));
         }
 
+        // Get the details of a program
         [FunctionName("GetProgramDetailsByID")]
         public static async Task<IActionResult> GetProgramDetailsByID(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "program/detail/{id}")] HttpRequest req,
